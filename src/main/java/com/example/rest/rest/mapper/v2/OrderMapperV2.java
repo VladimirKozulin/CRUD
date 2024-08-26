@@ -16,7 +16,7 @@ public interface OrderMapperV2 {
 
     Order requestToOrder(UpsertOrderRequest request);
 
-    @Mapping(source = "clientId", target = "id")
+    @Mapping(source = "orderId", target = "id")
     Order requestToOrder(Long orderId, UpsertOrderRequest request);
 
     OrderResponse orderToResponse(Order order);
