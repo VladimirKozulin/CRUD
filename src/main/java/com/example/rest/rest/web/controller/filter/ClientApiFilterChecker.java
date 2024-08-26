@@ -13,19 +13,19 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @Component
-@ConditionalOnExpression("{app.check-client-api-header:true}")
+@ConditionalOnExpression("${app.check-client-api-header:true}")
 public class ClientApiFilterChecker extends OncePerRequestFilter {
 
     private static final String HTT_CLIENT_HEADER = "X-Client-Api-Key";
 
-    @Value("${app.client-api-key")
+    @Value("${app.client-api-key}")
     private String clientApiKey;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String headerValue = request.getHeader(HTT_CLIENT_HEADER);
 
-        if (headerValue!= null && headerValue.equals(clientApiKey)) {
+        if (headerValue != null && headerValue.equals(clientApiKey)) {
             response.setHeader(HTT_CLIENT_HEADER,"Invalid");
             response.sendError(HttpStatus.BAD_REQUEST.value(), "Заголовок X-Client-Api-Key отсутствует или не указан!");
             return;
