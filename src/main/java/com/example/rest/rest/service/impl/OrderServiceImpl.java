@@ -5,7 +5,9 @@ import com.example.rest.rest.exception.UpdateStateException;
 import com.example.rest.rest.model.Order;
 import com.example.rest.rest.repository.OrderRepository;
 import com.example.rest.rest.service.OrderService;
+import com.example.rest.rest.web.model.OrderFilter;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.NotImplementedException;
 import org.apache.logging.log4j.CloseableThreadContext;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,12 @@ import java.util.List;
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
+
+    @Override
+    public List<Order> filterBy(OrderFilter filter) {
+        throw new NotImplementedException(); //Ничего не реализовано
+    }
+
     @Override
     public List<Order> findAll() {
         return orderRepository.findAll();
