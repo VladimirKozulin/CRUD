@@ -1,12 +1,12 @@
 package com.example.rest.rest.web.controller.v2;
 
+import com.example.rest.rest.mapper.v1.ClientMapper;
 import com.example.rest.rest.mapper.v2.OrderMapperV2;
+import com.example.rest.rest.model.Client;
 import com.example.rest.rest.model.Order;
 import com.example.rest.rest.service.OrderService;
-import com.example.rest.rest.web.model.OrderFilter;
-import com.example.rest.rest.web.model.OrderListResponse;
-import com.example.rest.rest.web.model.OrderResponse;
-import com.example.rest.rest.web.model.UpsertOrderRequest;
+import com.example.rest.rest.service.impl.DatabaseClientService;
+import com.example.rest.rest.web.model.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,6 +22,10 @@ public class OrderControllerV2 {
     private final OrderService databaseOrderService;
 
     private final OrderMapperV2 orderMapper;
+
+    private final ClientMapper clientMapper;
+
+    private final DatabaseClientService databaseClientService;
 
     @GetMapping("/filter")
     public ResponseEntity<OrderListResponse> filterBy(@Valid OrderFilter filter) {
@@ -65,4 +69,20 @@ public class OrderControllerV2 {
 
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/save-with-ordrs")
+    public ResponseEntity<ClientResponse> createdWithOrders(@RequestBody CreateClientOrderRequest requests) { //Забили болт на мапперы
+        Client client = Client.builder().name(requests.getName()).build();
+        List<Order> orders = requests.getOrders()
+                .stream()
+                .map(orderRequest -> Order.builder()
+                        .product(orderRequest.getProduct())
+                        .cost(orderRequest.getCost())
+                        .build())
+                .toList();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(
+                clientMapper.clientToResponse(databaseClientService.saveWithOrders(client,orders)));
+    }
+
 }
